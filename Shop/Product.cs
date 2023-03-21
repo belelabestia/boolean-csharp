@@ -5,7 +5,12 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-public record Product
+public interface IHasExtendedName
+{
+    string GetExtendedName();
+}
+
+public record Product : IHasExtendedName
 {
     string name = "";
     string description = "";
@@ -45,4 +50,18 @@ public record Product
     public double GetBasePrice() => Price;
     public double GetPriceAfterIva() => Price * (1 + Iva);
     public string GetExtendedName() => Code.ToString().PadLeft(20, '0') + " " + Name;
+}
+
+public class Person : IHasExtendedName
+{
+    string name = "";
+    string surname = "";
+
+    public Person(string name, string surname)
+    {
+        this.name = name;
+        this.surname = surname;
+    }
+
+    public string GetExtendedName() => name + " " + surname;
 }
