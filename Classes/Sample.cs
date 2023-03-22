@@ -4,26 +4,58 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Point
+public class NonZeroPoint
 {
-    public int X;
-    public int Y;
+    private int x;
+    private int y;
 
-    public Point(int x, int y)
+    public NonZeroPoint(int x, int y)
     {
-        X = x;
-        Y = y;
+        if (x == 0 && y == 0) throw new ArgumentException();
+
+        this.x = x;
+        this.y = y;
     }
 
-    public Point() { }
+    public NonZeroPoint(string x, string y) : this(Convert.ToInt32(x), Convert.ToInt32(y)) { }
 
-    public Point(string x, string y)
+    public int X
     {
-        X = Convert.ToInt32(x);
-        Y = Convert.ToInt32(y);
+        get { return x; }
+        set
+        {
+            SetX(value);
+        }
     }
 
-    public int Sum() => X + Y;
+    public int Y
+    {
+        get { return y; }
+        set
+        {
+            SetY(value);
+        }
+    }
 
-    public override string ToString() => $"[{X}, {Y}]";
+    public void SetX(int x)
+    {
+        if (x is 0) throw new ArgumentException();
+
+        this.x = x;
+    }
+
+    public int GetX() => x;
+
+    public void SetY(int y)
+    {
+        if (y is 0) throw new ArgumentException();
+
+        this.y = y;
+    }
+
+    public int GetY() => y;
+
+    public int Sum() => x + y;
+
+    public override string ToString() => $"[{x}, {y}]";
 }
