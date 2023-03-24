@@ -1,0 +1,37 @@
+Lista di Libri Preferiti:
+
+------ Libro ------
+Titolo: Clean Code
+Autore: Robert C. Martin
+Anno:   2008
+-------------------
+
+------ Libro ------
+Titolo: Agile Software Requirements
+Autore: Dean Leffingwell
+Anno:   2010
+-------------------
+
+------ Libro ------
+Titolo: The Devops Handbook
+Autore: Gene Kim
+Anno:   2016
+-------------------
+
+------ Libro ------
+Titolo: Design Patterns
+Autore: Erich Gamma
+Anno:   1995
+-------------------
+
+------ Libro ------
+Titolo: Introduction to Algorithms
+Autore: Thomas H. Cormen
+Anno:   2009
+-------------------
+
+------ Libro ------
+Titolo: Refactoring: Improving the Design of Existing Code
+Autore: Martin Fowler
+Anno:   2019
+-------------------

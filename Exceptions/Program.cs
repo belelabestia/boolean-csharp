@@ -24,6 +24,6 @@ while (true)
     }
     catch
     {
-
+        Console.Error.WriteLine("Unhandled exception.");
     }
 }

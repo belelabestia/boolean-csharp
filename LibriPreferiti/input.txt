@@ -1,0 +1,7 @@
+Ecco la lista dei miei libri preferiti:
+- Clean Code,Robert C. Martin,2008
+- Agile Software Requirements,Dean Leffingwell,2010
+- The Devops Handbook,Gene Kim,2016
+- Design Patterns,Erich Gamma,1995
+- Introduction to Algorithms,Thomas H. Cormen,2009
+- Refactoring: Improving the Design of Existing Code,Martin Fowler,2019
