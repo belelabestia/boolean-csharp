@@ -1,18 +1,41 @@
 ﻿using GestoreEventi;
 
-var e = new Evento();
+Console.WriteLine("Inserisci un nuovo evento:");
 
-_ = e.Whole; // 0
-_ = e.Half; // 0
-_ = e.GetWholeAsDouble(); // 0.0
-_ = e.GetWhole(); // 0
-_ = e.GetHalf(); // 0
+Console.WriteLine("Titolo evento:");
+string titolo = Console.ReadLine()!;
 
-_ = e.Half;
-e.Half = 13;
-_ = e.Whole; // 26
-e.Whole = 2;
-_ = e.Half; // 1
-_ = e.GetHalf();
-e.SetHalf(3);
-_ = e.GetWholeAsDouble(); // 6.0
+Console.WriteLine("Data evento:");
+DateTime data = Convert.ToDateTime(Console.ReadLine());
+
+Console.WriteLine("Capienza massima:");
+int capienzaMax = Convert.ToInt32(Console.ReadLine());
+
+var evento = new Evento(titolo, data, capienzaMax);
+
+Console.WriteLine("Vuoi fare prenotazioni? (0 = no, altrimenti specificare numero)");
+int prenotazioni = Convert.ToInt32(Console.ReadLine());
+
+evento.PrenotaPosti(prenotazioni);
+
+Console.WriteLine($"Posti prenotati: {evento.PostiPrenotati}; posti disponibili: {evento.PostiDisponibili}.");
+
+while (true)
+{
+    Console.WriteLine("Vuoi disdire dei posti? (sì/no; default no)");
+
+    var input = Console.ReadLine();
+
+    if (input == "sì")
+    {
+        Console.WriteLine("Quanti posti vuoi disdire?");
+        int postiDaDisdire = Convert.ToInt32(Console.ReadLine());
+
+        evento.DisdiciPosti(postiDaDisdire);
+    }
+    else
+    {
+        Console.WriteLine("Ok va bene!");
+        break;
+    }
+}

@@ -68,7 +68,7 @@ namespace GestoreEventi
             private set { postiPrenotati = value; }
         }
 
-        private int PostiDisponibili
+        public int PostiDisponibili
         {
             get { return CapienzaMax - PostiPrenotati; }
         }
