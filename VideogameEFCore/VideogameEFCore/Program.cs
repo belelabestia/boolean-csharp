@@ -1,6 +1,13 @@
 ﻿using VideogameEFCore;
 using VideogameEFCore.Models;
 
+/*
+ * Il nostro "main" gestisce le logiche di interazione con l'utente
+ */
+
+using var db = new VideogameContext();
+var manager = new VideogameManager(db);
+
 var ninendo = new SoftwareHouse
 {
     Name = "Nintendo",
@@ -10,7 +17,7 @@ var ninendo = new SoftwareHouse
     UpdatedAt = DateTime.Now,
 };
 
-var shId = VideogameManager.InserisciSoftwareHouse(ninendo);
+var shId = manager.InserisciSoftwareHouse(ninendo);
 
 var marioKart = new Videogame
 {
@@ -32,13 +39,13 @@ var mario64 = new Videogame
     UpdatedAt = DateTime.Now,
 };
 
-VideogameManager.InserisciVideogame(marioKart);
-VideogameManager.InserisciVideogame(mario64);
+manager.InserisciVideogame(marioKart);
+manager.InserisciVideogame(mario64);
 
-var results = VideogameManager.CercaVideogamePerNome("Mario Kart");
+var results = manager.CercaVideogamePerNome("Mario Kart");
 
 var vg = results.First();
-var vgById = VideogameManager.CercaVideogamePerId(vg.Id);
+var vgById = manager.CercaVideogamePerId(vg.Id);
 
 if (vgById is null)
 {
@@ -50,5 +57,5 @@ Console.WriteLine($"vg: {vg.Name}");
 Console.WriteLine($"vgById: {vgById.Name}");
 Console.WriteLine($"vg software house: {vgById.SoftwareHouse!.Name}");
 
-VideogameManager.CancellaVideogioco(vgById.Id);
+manager.CancellaVideogioco(vgById.Id);
 
