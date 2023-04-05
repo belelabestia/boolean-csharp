@@ -1,0 +1,62 @@
+﻿@{
+	var title = "Some title";
+
+	void PrintName(string name)
+	{
+		if (name.StartsWith("M"))
+		{
+			<p>Name with M: @name</p>
+		}
+		else
+		{
+			<p>Name without starting M: @name</p>
+		}
+	}
+
+	int Somma(int a, int b)
+	{
+		return a + b;
+	}
+}
+
+<header>
+	<h1>@title</h1>
+</header>
+
+<div>
+	<h2>Expression example</h2>
+	2 + 3 = @Somma(2, 3)
+</div>
+
+<div>
+	<h2>Cycle example</h2>
+
+	@foreach (var n in new int[] { 1, 2 })
+	{
+		<div>
+			<p>Number is @n</p>
+		</div>
+	}
+</div>
+
+<div>
+	<h2>Template function call example</h2>
+
+	@{
+		var names = new string[] { "Giorgio", "Anna", "Matteo", "Luca", "Noemi" };
+
+		foreach (var name in names) PrintName(name);
+	}
+</div>
+
+<div>
+	<h2>DateTime example</h2>
+
+	<p>@DateTime.Now.ToString("yyyy-MM-dd HH:mm")</p>
+</div>
+
+<div>
+	<h2>Template function reuse example</h2>
+
+	@{ PrintName("Giovanna"); }
+</div>
