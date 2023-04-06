@@ -1,9 +1,39 @@
-﻿@{
-    var post = new Post(
-        imageSrc: "https://picsum.photos/id/10/200/300",
-        title: "Post title",
-        description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quis est adipisci incidunt rem nostrum ipsam fuga ratione tempora eveniet!"
-    );
+﻿@model Post[]
+
+@{
+    ViewData["Title"] = "My posts";
+    var posts = Model;
 }
 
-<p>Funziona</p>
+<h2>My posts</h2>
+
+@if (posts.Length is 0)
+{
+    <p>No post to display :\</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in posts)
+            {
+                <tr>
+                    <td>@post.Id</td>
+                    <td class="image"><img class="post-link-image" src="@post.ImageSrc"></td>
+                    <td class="title">
+                        <a href="@Url.Action("Detail", "Post", new { Id = post.Id })">@post.Title</a>
+                    </td>
+                    <td class="description">@post.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
