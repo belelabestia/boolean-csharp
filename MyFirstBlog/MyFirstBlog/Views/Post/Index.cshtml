@@ -7,6 +7,8 @@
 
 <h2>My posts</h2>
 
+<a href="@Url.Action("Create", "Post")">New post</a>
+
 @if (posts.Length is 0)
 {
     <p>No post to display :\</p>
@@ -25,14 +27,7 @@ else
         <tbody>
             @foreach (var post in posts)
             {
-                <tr>
-                    <td>@post.Id</td>
-                    <td class="image"><img class="post-link-image" src="@post.ImageSrc"></td>
-                    <td class="title">
-                        <a href="@Url.Action("Detail", "Post", new { Id = post.Id })">@post.Title</a>
-                    </td>
-                    <td class="description">@post.Description</td>
-                </tr>
+                @await Html.PartialAsync("_PostRow", post);
             }
         </tbody>
     </table>

@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="~/MyFirstBlog.styles.css" asp-append-version="true" />
     @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
 </head>
-<body>
+<body class="flex column">
     @await Html.PartialAsync("_NavbarPartial")
 
-    <main class="pad flex column center">
+    <main class="fill pad flex column center">
         @RenderBody()
     </main>
 

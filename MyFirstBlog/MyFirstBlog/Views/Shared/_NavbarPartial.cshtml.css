@@ -1,8 +1,4 @@
-﻿h1 {
-    color: red;
-}
-
-ul {
+﻿ul {
     padding-left: 0;
     list-style: none;
     display: flex;

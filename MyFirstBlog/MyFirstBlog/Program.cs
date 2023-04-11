@@ -1,9 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using MyFirstBlog.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSqlServer<BlogContext>("Data Source=localhost;Initial Catalog=BlogDb;Integrated Security=True;Pooling=False;TrustServerCertificate=True");
 
 var app = builder.Build();
 
@@ -26,9 +28,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Post}/{action=Index}/{id?}");
 
-using (var ctx = new BlogContext())
+using (var scope = app.Services.CreateScope())
+using (var ctx = scope.ServiceProvider.GetService<BlogContext>())
 {
-    ctx.Seed();
+    ctx!.Seed();
 }
 
 app.Run();

@@ -4,12 +4,9 @@ namespace MyFirstBlog.Models
 {
     public class BlogContext : DbContext
     {
-        public DbSet<Post> Posts { get; set; }
+		public BlogContext(DbContextOptions<BlogContext> options) : base(options) { }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=BlogDb;Integrated Security=True;Pooling=False;TrustServerCertificate=True");
-        }
+		public DbSet<Post> Posts { get; set; }
 
         public void Seed()
         {

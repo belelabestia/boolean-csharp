@@ -1,0 +1,14 @@
+﻿@model Post
+
+@{
+    var post = Model;
+}
+
+<tr>
+    <td>@post.Id</td>
+    <td class="image"><img class="post-link-image" src="@post.ImageSrc"></td>
+    <td class="title">
+        <a href="@Url.Action("Detail", "Post", new { Id = post.Id })">@post.Title</a>
+    </td>
+    <td class="description">@post.Description</td>
+</tr>
