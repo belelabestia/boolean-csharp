@@ -16,13 +16,13 @@ namespace MyFirstBlog.Models
                 {
                     new Post
                     {
-                        ImageSrc = "https://picsum.photos/id/10/200/300",
+                        ImageUrl = "https://picsum.photos/id/10/200/300",
                         Title =  "Post title",
                         Description = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quis est adipisci incidunt rem nostrum ipsam fuga ratione tempora eveniet!"
                     },
                     new Post
                     {
-                        ImageSrc = "/img/fondo-pag-speciali.jpg",
+                        ImageUrl = "/img/fondo-pag-speciali.jpg",
                         Title = "Post title 1",
                         Description = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quis est adipisci incidunt rem nostrum ipsam fuga ratione tempora eveniet!"
                     }

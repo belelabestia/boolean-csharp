@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyFirstBlog.Models;
 
 namespace MyFirstBlog.Controllers
@@ -37,7 +38,7 @@ namespace MyFirstBlog.Controllers
         {
             var post = new Post
             {
-                ImageSrc = "https://picsum.photos/200/300"
+                ImageUrl = "https://picsum.photos/200/300"
 			};
 
             return View(post);
@@ -51,8 +52,81 @@ namespace MyFirstBlog.Controllers
             {
                 return View(post);
             }
+
+            post.SetImageFileFromFormFile();
             
             _context.Posts.Add(post);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Update(int id)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+
+            if (post is null)
+            {
+                return View("NotFound");
+            }
+
+            return View(post);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(int id, Post post)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(post);
+            }
+
+            // ---ORIGINAL---
+
+            //var postToUpdate = _context.Posts.FirstOrDefault(p => p.Id == id);
+
+            //if (postToUpdate is null)
+            //{
+            //    return View("NotFound");
+            //}
+
+            //postToUpdate.Title = post.Title;
+            //postToUpdate.Description = post.Description;
+            //postToUpdate.ImageUrl = post.ImageUrl;
+
+            //_context.SaveChanges();
+
+            // ---FANCY---
+
+            var savedPost = _context.Posts.AsNoTracking().FirstOrDefault(p => p.Id == id);
+
+            if (savedPost is null)
+            {
+                return View("NotFound");
+            }
+
+            post.ImageFile = savedPost.ImageFile;
+            post.SetImageFileFromFormFile();
+
+            _context.Posts.Update(post);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Delete(int id)
+        {
+            var postToDelete = _context.Posts.FirstOrDefault(p => p.Id == id);
+
+            if (postToDelete is null)
+            {
+                return View("NotFound");
+            }
+
+            _context.Posts.Remove(postToDelete);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
