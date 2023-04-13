@@ -4,34 +4,53 @@ namespace MyFirstBlog.Models
 {
     public class BlogContext : DbContext
     {
-		public BlogContext(DbContextOptions<BlogContext> options) : base(options) { }
+        public BlogContext(DbContextOptions<BlogContext> options) : base(options) { }
 
-		public DbSet<Post> Posts { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public void Seed()
         {
+            var postSeed = new Post[]
+            {
+                new()
+                {
+                    ImageUrl = "https://picsum.photos/id/10/200/300",
+                    Title =  "Post title",
+                    Description = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quis est adipisci incidunt rem nostrum ipsam fuga ratione tempora eveniet!"
+                },
+                new()
+                {
+                    ImageUrl = "/img/fondo-pag-speciali.jpg",
+                    Title = "Post title 1",
+                    Description = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quis est adipisci incidunt rem nostrum ipsam fuga ratione tempora eveniet!"
+                }
+            };
+
             if (!Posts.Any())
             {
-                var seed = new Post[]
+                Posts.AddRange(postSeed);
+            }
+
+            if (!Categories.Any())
+            {
+                var seed = new Category[]
                 {
-                    new Post
+                    new()
                     {
-                        ImageUrl = "https://picsum.photos/id/10/200/300",
-                        Title =  "Post title",
-                        Description = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quis est adipisci incidunt rem nostrum ipsam fuga ratione tempora eveniet!"
+                        Title = "Fun",
                     },
-                    new Post
+                    new()
                     {
-                        ImageUrl = "/img/fondo-pag-speciali.jpg",
-                        Title = "Post title 1",
-                        Description = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quis est adipisci incidunt rem nostrum ipsam fuga ratione tempora eveniet!"
+                        Title = "Generic",
+                        Posts = postSeed
                     }
                 };
 
-                Posts.AddRange(seed);
-
-                SaveChanges();
+                Categories.AddRange(seed);
             }
+
+            SaveChanges();
         }
     }
 }

@@ -22,6 +22,10 @@ namespace MyFirstBlog.Models
 
         public byte[]? ImageFile { get; set; }
 
+        [NonZero(ErrorMessage = "Please pick a category.")]
+        public int CategoryId { get; set; }
+        public Category? Category { get; set; }
+
         [NotMapped]
         public IFormFile? ImageFormFile { get; set; }
 

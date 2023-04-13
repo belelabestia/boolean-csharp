@@ -11,6 +11,7 @@
         <a href="@Url.Action("Detail", "Post", new { Id = post.Id })">@post.Title</a>
     </td>
     <td class="description">@post.Description</td>
+    <td>@post.Category!.Title</td>
     <td class="grid gap">
         <a href="@Url.Action("Update", "Post", new { Id = post.Id })">Edit</a>
         <form asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">

@@ -18,13 +18,18 @@ namespace MyFirstBlog.Controllers
 
 		public IActionResult Index()
         {
-            var posts = _context.Posts.ToArray();
+            var posts = _context.Posts
+                .Include(p => p.Category)
+                .ToArray();
+
             return View(posts);
         }
 
         public IActionResult Detail(int id)
         {
-            var post = _context.Posts.SingleOrDefault(p => p.Id == id);
+            var post = _context.Posts
+                .Include(p => p.Category)
+                .SingleOrDefault(p => p.Id == id);
             
             if (post is null)
             {
@@ -36,26 +41,27 @@ namespace MyFirstBlog.Controllers
 
         public IActionResult Create()
         {
-            var post = new Post
+            var formModel = new PostFormModel
             {
-                ImageUrl = "https://picsum.photos/200/300"
-			};
+                Categories = _context.Categories.ToArray(),
+            };
 
-            return View(post);
+            return View(formModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Post post)
+        public IActionResult Create(PostFormModel form)
         {
             if (!ModelState.IsValid)
             {
-                return View(post);
+                form.Categories = _context.Categories.ToArray();
+                return View(form);
             }
 
-            post.SetImageFileFromFormFile();
+            form.Post.SetImageFileFromFormFile();
             
-            _context.Posts.Add(post);
+            _context.Posts.Add(form.Post);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
@@ -70,34 +76,24 @@ namespace MyFirstBlog.Controllers
                 return View("NotFound");
             }
 
-            return View(post);
+            var formModel = new PostFormModel
+            {
+                Post = post,
+                Categories = _context.Categories.ToArray()
+            };
+
+            return View(formModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int id, Post post)
+        public IActionResult Update(int id, PostFormModel form)
         {
             if (!ModelState.IsValid)
             {
-                return View(post);
+                form.Categories = _context.Categories.ToArray();
+                return View(form);
             }
-
-            // ---ORIGINAL---
-
-            //var postToUpdate = _context.Posts.FirstOrDefault(p => p.Id == id);
-
-            //if (postToUpdate is null)
-            //{
-            //    return View("NotFound");
-            //}
-
-            //postToUpdate.Title = post.Title;
-            //postToUpdate.Description = post.Description;
-            //postToUpdate.ImageUrl = post.ImageUrl;
-
-            //_context.SaveChanges();
-
-            // ---FANCY---
 
             var savedPost = _context.Posts.AsNoTracking().FirstOrDefault(p => p.Id == id);
 
@@ -106,10 +102,10 @@ namespace MyFirstBlog.Controllers
                 return View("NotFound");
             }
 
-            post.ImageFile = savedPost.ImageFile;
-            post.SetImageFileFromFormFile();
+            form.Post.ImageFile = savedPost.ImageFile;
+            form.Post.SetImageFileFromFormFile();
 
-            _context.Posts.Update(post);
+            _context.Posts.Update(form.Post);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
