@@ -59,7 +59,7 @@ namespace MyFirstBlog.Controllers
                 return View(form);
             }
 
-            form.Post.SetImageFileFromFormFile();
+            form.SetImageFileFromFormFile();
             
             _context.Posts.Add(form.Post);
             _context.SaveChanges();
@@ -103,7 +103,7 @@ namespace MyFirstBlog.Controllers
             }
 
             form.Post.ImageFile = savedPost.ImageFile;
-            form.Post.SetImageFileFromFormFile();
+            form.SetImageFileFromFormFile();
 
             _context.Posts.Update(form.Post);
             _context.SaveChanges();

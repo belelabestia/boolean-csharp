@@ -17,14 +17,19 @@
 				<span asp-validation-for="Post.Description" class="text error"></span>
 			</div>
 			<div class="form-field">
+				<label asp-for="Post.Rating">Rating</label>
+				<input asp-for="Post.Rating"/>
+				<span asp-validation-for="Post.Rating" class="text error"></span>
+			</div>
+			<div class="form-field">
 				<label asp-for="Post.ImageUrl">Image source</label>
 				<input asp-for="Post.ImageUrl"/>
 				<span asp-validation-for="Post.ImageUrl" class="text error"></span>
 			</div>
 			<div class="form-field">
-				<label asp-for="Post.ImageFormFile">Image file</label>
-				<input type="file" asp-for="Post.ImageFormFile"/>
-				<span asp-validation-for="Post.ImageFormFile" class="text error"></span>
+				<label asp-for="ImageFormFile">Image file</label>
+				<input type="file" asp-for="ImageFormFile"/>
+				<span asp-validation-for="ImageFormFile" class="text error"></span>
 			</div>
 			<div class="form-field">
 				<label asp-for="Post.CategoryId">Category</label>

@@ -18,28 +18,18 @@ namespace MyFirstBlog.Models
         [Column(TypeName = "text")]
         public string Description { get; set; } = string.Empty;
 
+        public decimal Rating { get; set; }
+
         public string ImageUrl { get; set; } = string.Empty;
 
         public byte[]? ImageFile { get; set; }
-
-        [NonZero(ErrorMessage = "Please pick a category.")]
-        public int CategoryId { get; set; }
-        public Category? Category { get; set; }
-
-        [NotMapped]
-        public IFormFile? ImageFormFile { get; set; }
 
         public string ImgSrc => ImageFile is null
             ? ImageUrl
             : $"data:image/png;base64,{Convert.ToBase64String(ImageFile)}";
 
-        public void SetImageFileFromFormFile()
-        {
-            if (ImageFormFile is null) return;
-
-            using var stream = new MemoryStream();
-            ImageFormFile!.CopyTo(stream);
-            ImageFile = stream.ToArray();
-        }
+        [NonZero(ErrorMessage = "Please pick a category.")]
+        public int CategoryId { get; set; }
+        public Category? Category { get; set; }
     }
 }
