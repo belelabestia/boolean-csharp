@@ -18,8 +18,13 @@
 			</p>
 		</div>
 		<div>
-			<h3>Rating</h3>
-			<p>@post.Rating</p>
+			<h3>Tags</h3>
+			<div class="flex gap">
+				@foreach (var tag in post.Tags!)
+				{
+					<span>@tag.Title</span>
+				}
+			</div>
 		</div>
 	</div>
 </div>

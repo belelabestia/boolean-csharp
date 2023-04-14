@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyFirstBlog.Models;
 
@@ -29,6 +30,7 @@ namespace MyFirstBlog.Controllers
         {
             var post = _context.Posts
                 .Include(p => p.Category)
+                .Include(p => p.Tags)
                 .SingleOrDefault(p => p.Id == id);
             
             if (post is null)
@@ -44,6 +46,7 @@ namespace MyFirstBlog.Controllers
             var formModel = new PostFormModel
             {
                 Categories = _context.Categories.ToArray(),
+                Tags = _context.Tags.Select(t => new SelectListItem(t.Title, t.Id.ToString())).ToArray(),
             };
 
             return View(formModel);
@@ -56,10 +59,13 @@ namespace MyFirstBlog.Controllers
             if (!ModelState.IsValid)
             {
                 form.Categories = _context.Categories.ToArray();
+                form.Tags = _context.Tags.Select(t => new SelectListItem(t.Title, t.Id.ToString())).ToArray();
+
                 return View(form);
             }
 
             form.SetImageFileFromFormFile();
+            form.Post.Tags = form.SelectedTags.Select(st => _context.Tags.First(t => t.Id == Convert.ToInt32(st))).ToList();
             
             _context.Posts.Add(form.Post);
             _context.SaveChanges();
@@ -69,7 +75,7 @@ namespace MyFirstBlog.Controllers
 
         public IActionResult Update(int id)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var post = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
 
             if (post is null)
             {
@@ -79,8 +85,15 @@ namespace MyFirstBlog.Controllers
             var formModel = new PostFormModel
             {
                 Post = post,
-                Categories = _context.Categories.ToArray()
+                Categories = _context.Categories.ToArray(),
+                Tags = _context.Tags.ToArray().Select(t => new SelectListItem(
+                    t.Title,
+                    t.Id.ToString(),
+                    post.Tags!.Any(_t => _t.Id == t.Id))
+                ).ToArray()
             };
+
+            formModel.SelectedTags = formModel.Tags.Where(t => t.Selected).Select(t => t.Value).ToList();
 
             return View(formModel);
         }
@@ -92,20 +105,27 @@ namespace MyFirstBlog.Controllers
             if (!ModelState.IsValid)
             {
                 form.Categories = _context.Categories.ToArray();
+                form.Tags = _context.Tags.Select(t => new SelectListItem(t.Title, t.Id.ToString())).ToArray();
+
                 return View(form);
             }
 
-            var savedPost = _context.Posts.AsNoTracking().FirstOrDefault(p => p.Id == id);
+            var savedPost = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
 
             if (savedPost is null)
             {
                 return View("NotFound");
             }
 
-            form.Post.ImageFile = savedPost.ImageFile;
             form.SetImageFileFromFormFile();
 
-            _context.Posts.Update(form.Post);
+            savedPost.Title = form.Post.Title;
+            savedPost.Description = form.Post.Description;
+            savedPost.ImageUrl = form.Post.ImageUrl;
+            savedPost.CategoryId = form.Post.CategoryId;
+            savedPost.ImageFile = form.Post.ImageFile;
+            savedPost.Tags = form.SelectedTags.Select(st => _context.Tags.First(t => t.Id == Convert.ToInt32(st))).ToList();
+
             _context.SaveChanges();
 
             return RedirectToAction("Index");

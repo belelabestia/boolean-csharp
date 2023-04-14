@@ -8,6 +8,7 @@ namespace MyFirstBlog.Models
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         public void Seed()
         {
@@ -48,6 +49,28 @@ namespace MyFirstBlog.Models
                 };
 
                 Categories.AddRange(seed);
+            }
+
+            if (!Tags.Any())
+            {
+                var seed = new Tag[]
+                {
+                    new()
+                    {
+                        Title = "foryou"
+                    },
+                    new()
+                    {
+                        Title = "lifestyle",
+                        Posts = postSeed
+                    },
+                    new()
+                    {
+                        Title = "science"
+                    }
+                };
+
+                Tags.AddRange(seed);
             }
 
             SaveChanges();

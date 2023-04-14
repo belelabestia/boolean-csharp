@@ -120,3 +120,7 @@ form {
 .gap {
     gap: 8px;
 }
+
+.divide > * + * {
+    border-left: 1px solid grey;
+}

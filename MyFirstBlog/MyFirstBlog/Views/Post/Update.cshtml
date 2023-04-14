@@ -18,11 +18,6 @@
 				<span asp-validation-for="Post.Description" class="text error"></span>
 			</div>
 			<div class="form-field">
-				<label asp-for="Post.Rating">Rating</label>
-				<input asp-for="Post.Rating" pattern="^\d+(\,\d+)?$"/>
-				<span asp-validation-for="Post.Rating" class="text error"></span>
-			</div>
-			<div class="form-field">
 				<label asp-for="Post.ImageUrl">Image source</label>
 				<input asp-for="Post.ImageUrl"/>
 				<span asp-validation-for="Post.ImageUrl" class="text error"></span>
@@ -42,6 +37,10 @@
 					}
 				</select>
 				<span asp-validation-for="Post.CategoryId" class="text error"></span>
+			</div>
+			<div class="form-field">
+				<label asp-for="SelectedTags">Tags</label>
+				<select asp-for="SelectedTags" multiple="multiple" asp-items="@Model.Tags"></select>
 			</div>
 			<button type="submit">Save</button>
 		</form>
