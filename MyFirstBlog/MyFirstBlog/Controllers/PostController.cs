@@ -6,10 +6,10 @@ using MyFirstBlog.Models;
 
 namespace MyFirstBlog.Controllers
 {
-    public class PostController : Controller
-    {
-        private readonly ILogger<PostController> _logger;
-        private readonly BlogContext _context;
+	public class PostController : Controller
+	{
+		private readonly ILogger<PostController> _logger;
+		private readonly BlogContext _context;
 
 		public PostController(ILogger<PostController> logger, BlogContext context)
 		{
@@ -18,140 +18,134 @@ namespace MyFirstBlog.Controllers
 		}
 
 		public IActionResult Index()
-        {
-            var posts = _context.Posts
-                .Include(p => p.Category)
-                .ToArray();
+		{
+			var posts = _context.Posts
+				.Include(p => p.Category)
+				.ToArray();
 
-            return View(posts);
-        }
+			return View(posts);
+		}
 
-        public IActionResult Detail(int id)
-        {
-            var post = _context.Posts
-                .Include(p => p.Category)
-                .Include(p => p.Tags)
-                .SingleOrDefault(p => p.Id == id);
-            
-            if (post is null)
-            {
-                return View("NotFound", "Post not found.");
-            }
+		public IActionResult Detail(int id)
+		{
+			var post = _context.Posts
+				.Include(p => p.Category)
+				.Include(p => p.Tags)
+				.SingleOrDefault(p => p.Id == id);
 
-            return View(post);
-        }
+			if (post is null)
+			{
+				return View("NotFound", "Post not found.");
+			}
 
-        public IActionResult Create()
-        {
-            var formModel = new PostFormModel
-            {
-                Categories = _context.Categories.ToArray(),
-                Tags = _context.Tags.Select(t => new SelectListItem(t.Title, t.Id.ToString())).ToArray(),
-            };
+			return View(post);
+		}
 
-            return View(formModel);
-        }
+		public IActionResult Create()
+		{
+			var formModel = new PostFormModel
+			{
+				Categories = _context.Categories.ToArray(),
+				Tags = _context.Tags.ToArray(),
+			};
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(PostFormModel form)
-        {
-            if (!ModelState.IsValid)
-            {
-                form.Categories = _context.Categories.ToArray();
-                form.Tags = _context.Tags.Select(t => new SelectListItem(t.Title, t.Id.ToString())).ToArray();
+			return View(formModel);
+		}
 
-                return View(form);
-            }
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Create(PostFormModel form)
+		{
+			if (!ModelState.IsValid)
+			{
+				form.Categories = _context.Categories.ToArray();
+				form.Tags = _context.Tags.ToArray();
 
-            form.SetImageFileFromFormFile();
-            form.Post.Tags = form.SelectedTags.Select(st => _context.Tags.First(t => t.Id == Convert.ToInt32(st))).ToList();
-            
-            _context.Posts.Add(form.Post);
-            _context.SaveChanges();
+				return View(form);
+			}
 
-            return RedirectToAction("Index");
-        }
+			form.SetImageFileFromFormFile();
 
-        public IActionResult Update(int id)
-        {
-            var post = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
+			_context.Posts.Add(form.Post);
+			_context.SaveChanges();
 
-            if (post is null)
-            {
-                return View("NotFound");
-            }
+			return RedirectToAction("Index");
+		}
 
-            var formModel = new PostFormModel
-            {
-                Post = post,
-                Categories = _context.Categories.ToArray(),
-                Tags = _context.Tags.ToArray().Select(t => new SelectListItem(
-                    t.Title,
-                    t.Id.ToString(),
-                    post.Tags!.Any(_t => _t.Id == t.Id))
-                ).ToArray()
-            };
+		public IActionResult Update(int id)
+		{
+			var post = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
 
-            formModel.SelectedTags = formModel.Tags.Where(t => t.Selected).Select(t => t.Value).ToList();
+			if (post is null)
+			{
+				return View("NotFound");
+			}
 
-            return View(formModel);
-        }
+			var formModel = new PostFormModel
+			{
+				Post = post,
+				Categories = _context.Categories.ToArray(),
+				Tags = _context.Tags.ToArray(),
+			};
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Update(int id, PostFormModel form)
-        {
-            if (!ModelState.IsValid)
-            {
-                form.Categories = _context.Categories.ToArray();
-                form.Tags = _context.Tags.Select(t => new SelectListItem(t.Title, t.Id.ToString())).ToArray();
+			return View(formModel);
+		}
 
-                return View(form);
-            }
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Update(int id, PostFormModel form)
+		{
+			if (!ModelState.IsValid)
+			{
+				form.Categories = _context.Categories.ToArray();
+				form.Tags = _context.Tags.ToArray();
 
-            var savedPost = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
+				return View(form);
+			}
 
-            if (savedPost is null)
-            {
-                return View("NotFound");
-            }
+			var savedPost = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
+			var tags = _context.Tags.ToArray();
 
-            form.SetImageFileFromFormFile();
+			if (savedPost is null)
+			{
+				return View("NotFound");
+			}
 
-            savedPost.Title = form.Post.Title;
-            savedPost.Description = form.Post.Description;
-            savedPost.ImageUrl = form.Post.ImageUrl;
-            savedPost.CategoryId = form.Post.CategoryId;
-            savedPost.ImageFile = form.Post.ImageFile;
-            savedPost.Tags = form.SelectedTags.Select(st => _context.Tags.First(t => t.Id == Convert.ToInt32(st))).ToList();
+			form.SetImageFileFromFormFile();
 
-            _context.SaveChanges();
+			savedPost.Title = form.Post.Title;
+			savedPost.Description = form.Post.Description;
+			savedPost.ImageUrl = form.Post.ImageUrl;
+			savedPost.CategoryId = form.Post.CategoryId;
+			savedPost.ImageFile = form.Post.ImageFile;
+			savedPost.Tags = form.SelectedTagIds.Select(id => tags.First(t => t.Id == id)).ToList();
 
-            return RedirectToAction("Index");
-        }
+			_context.SaveChanges();
 
-        [HttpPost]
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Delete(int id)
-        {
-            var postToDelete = _context.Posts.FirstOrDefault(p => p.Id == id);
+		{
+			var postToDelete = _context.Posts.FirstOrDefault(p => p.Id == id);
 
-            if (postToDelete is null)
-            {
-                return View("NotFound");
-            }
+			if (postToDelete is null)
+			{
+				return View("NotFound");
+			}
 
-            _context.Posts.Remove(postToDelete);
-            _context.SaveChanges();
+			_context.Posts.Remove(postToDelete);
+			_context.SaveChanges();
 
-            return RedirectToAction("Index");
-        }
+			return RedirectToAction("Index");
+		}
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-    }
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Error()
+		{
+			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+	}
 }

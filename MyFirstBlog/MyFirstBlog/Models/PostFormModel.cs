@@ -7,9 +7,8 @@ namespace MyFirstBlog.Models
         public Post Post { get; set; } = new Post { ImageUrl = "https://picsum.photos/200/300" };
         public IFormFile? ImageFormFile { get; set; }
         public IEnumerable<Category> Categories { get; set; } = Enumerable.Empty<Category>();
-        
-        public IEnumerable<SelectListItem> Tags { get; set; } = Enumerable.Empty<SelectListItem>();
-        public List<string> SelectedTags { get; set; } = new();
+        public IEnumerable<Tag> Tags { get; set; } = Enumerable.Empty<Tag>();
+        public List<int> SelectedTagIds { get; set; } = new();
 
         public void SetImageFileFromFormFile()
         {
