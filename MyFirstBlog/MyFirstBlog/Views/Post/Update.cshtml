@@ -43,7 +43,7 @@
 				<select asp-for="SelectedTagIds" multiple="multiple">
 					@foreach (var tag in Model.Tags)
 					{
-						<option value="@tag.Id" selected="@Model.Post.Tags!.Any(t => t.Id == tag.Id)">@tag.Title</option>
+						<option value="@tag.Id" selected="@Model.SelectedTagIds.Contains(tag.Id)">@tag.Title</option>
 					}
 				</select>
 			</div>

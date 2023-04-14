@@ -86,6 +86,7 @@ namespace MyFirstBlog.Controllers
 				Post = post,
 				Categories = _context.Categories.ToArray(),
 				Tags = _context.Tags.ToArray(),
+				SelectedTagIds = post.Tags!.Select(t => t.Id).ToList()
 			};
 
 			return View(formModel);
