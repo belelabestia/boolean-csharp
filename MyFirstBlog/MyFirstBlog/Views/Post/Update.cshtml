@@ -38,7 +38,7 @@
 				</select>
 				<span asp-validation-for="Post.CategoryId" class="text error"></span>
 			</div>
-			<div class="form-field">
+@*			<div class="form-field">
 				<label asp-for="SelectedTagIds">Tags</label>
 				<select asp-for="SelectedTagIds" multiple="multiple">
 					@foreach (var tag in Model.Tags)
@@ -46,6 +46,16 @@
 						<option value="@tag.Id" selected="@Model.SelectedTagIds.Contains(tag.Id)">@tag.Title</option>
 					}
 				</select>
+			</div>*@
+			<div class="form-field">
+				<label for="SelectedTagIds">Tags</label>
+					@foreach (var tag in Model.Tags)
+					{
+						<div class="flex gap">
+							<input value="@tag.Id" id="@tag.Id" checked="@Model.SelectedTagIds.Contains(tag.Id)" name="SelectedTagIds" type="checkbox" />
+							<label for="@tag.Id">@tag.Title</label>
+						</div>
+					}
 			</div>
 			<button type="submit">Save</button>
 		</form>

@@ -12,11 +12,14 @@
     </td>
     <td class="description">@post.Description</td>
     <td>@post.Category!.Title</td>
-    <td class="grid gap">
-        <a href="@Url.Action("Update", "Post", new { Id = post.Id })">Edit</a>
-        <form asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">
-            @Html.AntiForgeryToken()
-            <button type="submit">Delete</button>
-        </form>
-    </td>
+    @if (User.IsInRole("Admin"))
+    {  
+        <td class="grid gap">
+            <a href="@Url.Action("Update", "Post", new { Id = post.Id })">Edit</a>
+            <form asp-action="Delete" asp-controller="Post" asp-route-id="@post.Id">
+                @Html.AntiForgeryToken()
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    }
 </tr>

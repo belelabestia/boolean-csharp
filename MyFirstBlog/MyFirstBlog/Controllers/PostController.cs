@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +8,7 @@ using MyFirstBlog.Models;
 
 namespace MyFirstBlog.Controllers
 {
+	[Authorize(Roles = "Admin,User")]
 	public class PostController : Controller
 	{
 		private readonly ILogger<PostController> _logger;
@@ -41,6 +44,7 @@ namespace MyFirstBlog.Controllers
 			return View(post);
 		}
 
+		[Authorize(Roles = "Admin")]
 		public IActionResult Create()
 		{
 			var formModel = new PostFormModel
@@ -52,6 +56,7 @@ namespace MyFirstBlog.Controllers
 			return View(formModel);
 		}
 
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Create(PostFormModel form)
@@ -64,6 +69,8 @@ namespace MyFirstBlog.Controllers
 				return View(form);
 			}
 
+			form.Post.Tags = _context.Tags.Where(t => form.SelectedTagIds.Contains(t.Id)).ToList();
+
 			form.SetImageFileFromFormFile();
 
 			_context.Posts.Add(form.Post);
@@ -72,6 +79,7 @@ namespace MyFirstBlog.Controllers
 			return RedirectToAction("Index");
 		}
 
+		[Authorize(Roles = "Admin")]
 		public IActionResult Update(int id)
 		{
 			var post = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
@@ -92,6 +100,7 @@ namespace MyFirstBlog.Controllers
 			return View(formModel);
 		}
 
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Update(int id, PostFormModel form)
@@ -105,7 +114,6 @@ namespace MyFirstBlog.Controllers
 			}
 
 			var savedPost = _context.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == id);
-			var tags = _context.Tags.ToArray();
 
 			if (savedPost is null)
 			{
@@ -119,13 +127,14 @@ namespace MyFirstBlog.Controllers
 			savedPost.ImageUrl = form.Post.ImageUrl;
 			savedPost.CategoryId = form.Post.CategoryId;
 			savedPost.ImageFile = form.Post.ImageFile;
-			savedPost.Tags = form.SelectedTagIds.Select(id => tags.First(t => t.Id == id)).ToList();
+			savedPost.Tags = _context.Tags.Where(t => form.SelectedTagIds.Contains(t.Id)).ToList();
 
-			_context.SaveChanges();
+            _context.SaveChanges();
 
 			return RedirectToAction("Index");
 		}
 
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Delete(int id)

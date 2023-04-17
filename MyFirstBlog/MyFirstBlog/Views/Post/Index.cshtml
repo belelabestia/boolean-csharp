@@ -7,9 +7,12 @@
 
 <h2>My posts</h2>
 
-<div class="pad">
-    <a href="@Url.Action("Create", "Post")">New post</a>
-</div>
+@if (User.IsInRole("Admin"))
+{
+    <div class="pad">
+        <a href="@Url.Action("Create", "Post")">New post</a>
+    </div>
+}
 
 @if (posts.Length is 0)
 {

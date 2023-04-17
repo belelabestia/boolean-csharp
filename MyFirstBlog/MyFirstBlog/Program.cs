@@ -1,11 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using MyFirstBlog.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<BlogContext>(options =>
+    options.UseSqlServer("Data Source=localhost;Initial Catalog=BlogDb;Integrated Security=True;Pooling=False;TrustServerCertificate=True"));
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+	.AddRoles<IdentityRole>()
+	.AddEntityFrameworkStores<BlogContext>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+	options.Password.RequireDigit = false;
+	options.Password.RequireLowercase = false;
+	options.Password.RequireNonAlphanumeric = false;
+	options.Password.RequireUppercase = false;
+	options.Password.RequiredLength = 0;
+	options.Password.RequiredUniqueChars = 0;
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSqlServer<BlogContext>("Data Source=localhost;Initial Catalog=BlogDb;Integrated Security=True;Pooling=False;TrustServerCertificate=True");
 
 var app = builder.Build();
 
@@ -22,11 +39,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Post}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 using (var ctx = scope.ServiceProvider.GetService<BlogContext>())
