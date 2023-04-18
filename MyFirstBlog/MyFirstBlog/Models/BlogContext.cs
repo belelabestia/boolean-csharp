@@ -86,7 +86,8 @@ namespace MyFirstBlog.Models
                 Roles.AddRange(seed);
             }
 
-            if (Users.Any(u => u.Email == "admin@dev.com" || u.Email == "user@dev.com")
+            if (!Users.Any(u => u.Email == "admin@dev.com")
+                && !Users.Any(u => u.Email == "user@dev.com")
                 && !UserRoles.Any())
             {
                 var admin = Users.First(u => u.Email == "admin@dev.com");

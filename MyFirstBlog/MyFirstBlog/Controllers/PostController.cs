@@ -11,12 +11,10 @@ namespace MyFirstBlog.Controllers
 	[Authorize(Roles = "Admin,User")]
 	public class PostController : Controller
 	{
-		private readonly ILogger<PostController> _logger;
 		private readonly BlogContext _context;
 
-		public PostController(ILogger<PostController> logger, BlogContext context)
+		public PostController(BlogContext context)
 		{
-			_logger = logger;
 			_context = context;
 		}
 
