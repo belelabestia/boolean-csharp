@@ -20,8 +20,11 @@ namespace MyFirstBlog.Api
         public IActionResult GetPosts([FromQuery] string? title)
         {
             var posts = _context.Posts
+                .Include(p => p.Category)
                 .Where(p => title == null || p.Title.ToLower().Contains(title.ToLower()))
                 .ToList();
+
+            foreach (var post in posts) post.Category!.Posts = null;
 
             return Ok(posts);
         }

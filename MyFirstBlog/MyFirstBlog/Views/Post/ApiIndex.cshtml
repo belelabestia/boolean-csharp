@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "My posts";
+}
+
+<h2>My posts</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="pad">
+        <a href="@Url.Action("ApiCreate", "Post")">New post</a>
+    </div>
+}
+
+<p id="posts-loader">Loading posts...</p>
+
+<p id="no-posts">No post to display :\</p>
+
+<div class="grid gap">
+    <div id="posts-filter">
+        <div class="form-field">
+            <label>Filter by title</label>
+            <input placeholder="filter" />
+        </div>
+    </div>
+
+    <table id="posts-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody id="posts"></tbody>
+    </table>
+</div>
+
+@section Scripts
+{
+    <script>
+        loadPosts();
+        initFilter();
+    </script>
+}

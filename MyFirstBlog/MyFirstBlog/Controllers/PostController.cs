@@ -27,7 +27,22 @@ namespace MyFirstBlog.Controllers
 			return View(posts);
 		}
 
-		public IActionResult Detail(int id)
+		public IActionResult ApiIndex()
+		{
+			return View();
+		}
+
+        public IActionResult ApiCreate()
+        {
+            return View();
+        }
+
+        public IActionResult ApiEdit()
+        {
+            return View();
+        }
+
+        public IActionResult Detail(int id)
 		{
 			var post = _context.Posts
 				.Include(p => p.Category)
