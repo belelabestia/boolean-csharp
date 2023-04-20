@@ -5,6 +5,7 @@ using MyFirstBlog.Models;
 
 namespace MyFirstBlog.Api
 {
+    // /api/post
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
@@ -16,6 +17,7 @@ namespace MyFirstBlog.Api
             _context = context;
         }
 
+        // get: /api/post[?title=<...>]
         [HttpGet]
         public IActionResult GetPosts([FromQuery] string? title)
         {
@@ -29,6 +31,7 @@ namespace MyFirstBlog.Api
             return Ok(posts);
         }
 
+        // get: /api/post/{id}
         [HttpGet("{id}")]
         public IActionResult GetPost(int id)
         {
@@ -42,6 +45,7 @@ namespace MyFirstBlog.Api
             return Ok(post);
         }
 
+        // post: /api/post (body: post)
         [HttpPost]
         public IActionResult CreatePost(Post post)
         {
@@ -51,6 +55,7 @@ namespace MyFirstBlog.Api
             return Ok(post);
         }
 
+        // put: /api/post/{id} (body: post)
         [HttpPut("{id}")]
         public IActionResult PutPost(int id, [FromBody] Post post)
         {
@@ -71,6 +76,7 @@ namespace MyFirstBlog.Api
             return Ok();
         }
 
+        // delete: /api/post/{id}
         [HttpDelete("{id}")]
         public IActionResult DeletePost(int id)
         {

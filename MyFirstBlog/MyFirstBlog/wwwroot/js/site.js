@@ -5,11 +5,19 @@
 
 // <Posts>
 
-const loadPosts = filter => getPosts(filter).then(renderPosts);
+const loadPosts = filter => getPosts(filter)
+    .then(posts => {
+        renderPosts(posts);
+        initButtons();
+    });
 
 const getPosts = title => axios
     .get('/api/post', title ? { params: { title } } : {})
     .then(res => res.data);
+
+const deletePost = id => axios
+    .delete(`/api/post/${id}`)
+    .then(() => loadPosts())
 
 const renderPosts = posts => {
     const noPosts = document.querySelector("#no-posts");
@@ -41,12 +49,24 @@ const postComponent = post => `
         <td>${post.category.title}</td>
         <td class="grid gap">
             <a href="/post/apiedit/${post.id}">Edit</a>
+            <button id="delete-button-${post.id}" class="delete-button">Delete</button>
         </td>
     </tr>`;
 
 const initFilter = () => {
     const filter = document.querySelector("#posts-filter input");
     filter.addEventListener("input", (e) => loadPosts(e.target.value))
+};
+
+const initButtons = () => {
+    const deleteButtons = document.querySelectorAll(".delete-button");
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            const id = Number(button.id.split("-")[2]);
+            deletePost(id);
+        });
+    })
 };
 
 // </Posts>
@@ -147,13 +167,39 @@ const initEditForm = () => {
     const imageUrl = form.querySelector("#image-url");
     const categoryId = form.querySelector("#category-id");
 
-    const post = getPost().then(post => {
+    const id = Number(location.pathname.split("/")[3]);
 
+    loadCategories()
+        .then(() => getPost(id))
+        .then(post => {
+            title.value = post.title;
+            description.value = post.description;
+            imageUrl.value = post.imageUrl;
+
+            const options = Array.from(categoryId.children);
+
+            for (const option of options) {
+                if (option.value == post.categoryId) {
+                    option.selected = true;
+                }
+            }
+        });
+
+    form.addEventListener("submit", e => {
+        e.preventDefault();
+
+        const post = getPostFromForm(form);
+        putPost(id, post);
     });
 };
 
 const getPost = id => axios
     .get(`/api/post/${id}`)
     .then(res => res.data);
+
+const putPost = (id, post) => axios
+    .put(`/api/post/${id}`, post)
+    .then(() => location.href = "/post/apiindex")
+    .catch(err => renderErrors(err.response.data.errors));
 
 // </EditPost>
