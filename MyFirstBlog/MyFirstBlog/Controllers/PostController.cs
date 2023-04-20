@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MyFirstBlog.Logging;
 using MyFirstBlog.Models;
 
 namespace MyFirstBlog.Controllers
@@ -12,14 +13,18 @@ namespace MyFirstBlog.Controllers
 	public class PostController : Controller
 	{
 		private readonly BlogContext _context;
+		private readonly ICustomLogger _logger;
 
-		public PostController(BlogContext context)
+		public PostController(BlogContext context, ICustomLogger logger)
 		{
 			_context = context;
+			_logger = logger;
 		}
 
 		public IActionResult Index()
 		{
+			_logger.WriteLog("Serving posts index view.");
+
 			var posts = _context.Posts
 				.Include(p => p.Category)
 				.ToArray();
@@ -29,7 +34,9 @@ namespace MyFirstBlog.Controllers
 
 		public IActionResult ApiIndex()
 		{
-			return View();
+            _logger.WriteLog("Serving api posts index view.");
+
+            return View();
 		}
 
         public IActionResult ApiCreate()
@@ -44,7 +51,9 @@ namespace MyFirstBlog.Controllers
 
         public IActionResult Detail(int id)
 		{
-			var post = _context.Posts
+            _logger.WriteLog($"Serving post index view (id: {id}).");
+
+            var post = _context.Posts
 				.Include(p => p.Category)
 				.Include(p => p.Tags)
 				.SingleOrDefault(p => p.Id == id);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyFirstBlog.Logging;
 using MyFirstBlog.Models;
 
 namespace MyFirstBlog.Api
@@ -11,16 +12,20 @@ namespace MyFirstBlog.Api
     public class PostController : ControllerBase
     {
         private readonly BlogContext _context;
+        private readonly ICustomLogger _logger;
 
-        public PostController(BlogContext context)
+        public PostController(BlogContext context, ICustomLogger logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // get: /api/post[?title=<...>]
         [HttpGet]
         public IActionResult GetPosts([FromQuery] string? title)
         {
+            _logger.WriteLog("Serving posts api data.");
+
             var posts = _context.Posts
                 .Include(p => p.Category)
                 .Where(p => title == null || p.Title.ToLower().Contains(title.ToLower()))
@@ -35,6 +40,8 @@ namespace MyFirstBlog.Api
         [HttpGet("{id}")]
         public IActionResult GetPost(int id)
         {
+            _logger.WriteLog($"Serving post api data (id: {id}).");
+
             var post = _context.Posts.FirstOrDefault(p => p.Id == id);
 
             if (post is null)

@@ -1,8 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using MyFirstBlog.Models;
 using Microsoft.AspNetCore.Identity;
+using MyFirstBlog.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<CustomConsoleLogger>();
+builder.Services.AddScoped<CustomFileLogger>();
+builder.Services.AddScoped<ICustomLogger, CustomGeneralLogger>();
 
 builder.Services.AddDbContext<BlogContext>(options =>
     options.UseSqlServer("Data Source=localhost;Initial Catalog=BlogDb;Integrated Security=True;Pooling=False;TrustServerCertificate=True"));
